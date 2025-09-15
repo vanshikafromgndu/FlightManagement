@@ -1,0 +1,179 @@
+package flight.program;
+
+import java.sql.*;
+import java.util.Scanner;
+
+public class Flight_Management {
+
+    private static final String url = "jdbc:mysql://localhost:3306/FlightManagement";
+    private static final String user = "root";
+    private static final String password = "pass@word1";
+
+    // Single Scanner for entire app, don't close until exit
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        Flight_Management fm = new Flight_Management();
+
+        if (!fm.testConnection()) {
+            System.out.println("❌ Cannot connect to database. Exiting...");
+            return; // don't close scanner, just exit
+        }
+
+        while (true) {
+            try {
+                System.out.println("\n============= USER MANAGEMENT MENU =============");
+                System.out.println("1. Insert new user");
+                System.out.println("2. Update user role");
+                System.out.println("3. Delete user");
+                System.out.println("4. Exit");
+                System.out.println("================================================");
+                System.out.print("Enter your choice (1-4): ");
+
+                if (!scanner.hasNextInt()) {
+                    System.out.println("❌ Invalid input. Please enter a number.");
+                    scanner.nextLine(); // discard invalid input
+                    continue;
+                }
+
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // consume leftover newline
+
+                switch (choice) {
+                    case 1:
+                        fm.insertUser(scanner);
+                        break;
+                    case 2:
+                        fm.updateUserRole(scanner);
+                        break;
+                    case 3:
+                        fm.deleteUser(scanner);
+                        break;
+                    case 4:
+                        System.out.println("✅ Exiting program. Goodbye!");
+                        scanner.close(); // close only at program exit
+                        return;
+                    default:
+                        System.out.println("❌ Invalid choice. Please enter 1 to 4.");
+                }
+            } catch (Exception e) {
+                System.out.println("❌ An error occurred. Please try again.");
+                e.printStackTrace();
+                scanner.nextLine(); // clear buffer
+            }
+        }
+    }
+
+    public boolean testConnection() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            try (Connection con = DriverManager.getConnection(url, user, password)) {
+                System.out.println("✅ Database connected successfully.");
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void insertUser(Scanner input) {
+        String query = "INSERT INTO users(username, password, email, phone, role) VALUES (?, ?, ?, ?, ?)";
+
+        try (
+            Connection con = DriverManager.getConnection(url, user, password);
+            PreparedStatement stmt = con.prepareStatement(query)
+        ) {
+            System.out.print("Enter username: ");
+            String username = input.nextLine();
+
+            System.out.print("Enter password: ");
+            String pwd = input.nextLine();
+
+            System.out.print("Enter email: ");
+            String email = input.nextLine();
+
+            System.out.print("Enter phone: ");
+            String phone = input.nextLine();
+
+            System.out.print("Enter role (PASSENGER/ADMIN): ");
+            String role = input.nextLine().toUpperCase();
+
+            stmt.setString(1, username);
+            stmt.setString(2, pwd);
+            stmt.setString(3, email);
+            stmt.setString(4, phone);
+            stmt.setString(5, role);
+
+            int rows = stmt.executeUpdate();
+            System.out.println("✅ User inserted successfully. Rows affected: " + rows);
+
+        } catch (SQLIntegrityConstraintViolationException dup) {
+            System.out.println("❌ Username or email already exists.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateUserRole(Scanner input) {
+        String query = "UPDATE users SET role = ? WHERE user_id = ?";
+
+        try (
+            Connection con = DriverManager.getConnection(url, user, password);
+            PreparedStatement stmt = con.prepareStatement(query)
+        ) {
+            System.out.print("Enter user_id to update: ");
+            while (!input.hasNextInt()) {
+                System.out.println("❌ Please enter a valid integer user_id.");
+                input.nextLine();
+            }
+            int userId = input.nextInt();
+            input.nextLine(); // consume newline
+
+            System.out.print("Enter new role (PASSENGER/ADMIN): ");
+            String role = input.nextLine().toUpperCase();
+
+            stmt.setString(1, role);
+            stmt.setInt(2, userId);
+
+            int rows = stmt.executeUpdate();
+            if (rows > 0) {
+                System.out.println("✅ User role updated successfully.");
+            } else {
+                System.out.println("❌ User ID not found.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteUser(Scanner input) {
+        String query = "DELETE FROM users WHERE user_id = ?";
+
+        try (
+            Connection con = DriverManager.getConnection(url, user, password);
+            PreparedStatement stmt = con.prepareStatement(query)
+        ) {
+            System.out.print("Enter user_id to delete: ");
+            while (!input.hasNextInt()) {
+                System.out.println("❌ Please enter a valid integer user_id.");
+                input.nextLine();
+            }
+            int userId = input.nextInt();
+            input.nextLine(); // consume newline
+
+            stmt.setInt(1, userId);
+
+            int rows = stmt.executeUpdate();
+            if (rows > 0) {
+                System.out.println("✅ User deleted successfully.");
+            } else {
+                System.out.println("❌ User ID not found.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
