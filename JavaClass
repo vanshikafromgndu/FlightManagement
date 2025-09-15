@@ -1,186 +1,347 @@
 package flight.program;
 
-import java.sql.Connection; 
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet; 
-import java.sql.SQLException; 
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Scanner;
 
 public class Flight_Management {
 
-	// JDBC URL, username and password of MySQL server
-    private static final String url = "jdbc:mysql://localhost:3306/db_world";
+    private static final String url = "jdbc:mysql://localhost:3306/FlightManagement";
     private static final String user = "root";
-    private static final String password = "root";
-    
+    private static final String password = "pass@word1";
+
     Connection con;
     PreparedStatement prSt;
     Statement stmt;
-	
-	public static void main(String[] args) {
-		
-		Flight_Management pse = new Flight_Management();
-    	
+
+    public static void main(String[] args) {
+
+        Flight_Management fm = new Flight_Management();
         Scanner input = new Scanner(System.in);
-    	
-        System.out.println("=============PREPARED STATEMENT MENU=================");
-        System.out.println("1. Insert the new employee Record"); 
-        System.out.println("2. Update the employee Record");
-        System.out.println("3. Delete the employee Record");
-        System.out.println("====================================================");
-    	System.out.println("Enter your choice from (1-3): ");
-    	
-    	int number = input.nextInt();
-    	System.out.println("You entered option" + number);
-    	
-    	switch(number)
-    	{
-    	case 1: pse.insertPSRecord();
-    	        break;
-    	
-    	case 2: pse.updatePSRecord();
-    	        break;
-    	        
-    	case 3: pse.deletePSRecord();
-    	        break;
-    	}	
-        	
-	}
-	
-	//-------------------------- Inserting The Record-----------------------------//
-	public void insertPSRecord()
-    {  
-		String query = "insert into emp(empid,empname,salary) values(?,?,?)";
-		
-	      try {
-	            Class.forName("com.mysql.jdbc.Driver");
-	            con = DriverManager.getConnection(url, user, password);
-	           
-	            prSt = con.prepareStatement(query);
-	            
-	            // Take user input for insertion
-	            Scanner input = new Scanner(System.in);	
-	            
-	            System.out.print("Enter the empid:  ");
-	            int eid = input.nextInt();
-	            System.out.println();
-	            
-	            System.out.print("Enter the employee salary:  ");
-	            int esal = input.nextInt();
-	            System.out.println();
-	            
-	            System.out.print("Enter the employee name:  ");
-	            String ename = input.next();
-	            System.out.println();
-	            
-	            prSt.setInt(1, eid);
-	            prSt.setString(2, ename);
-	            prSt.setInt(3, esal);
-	            
-	            int count = prSt.executeUpdate();
-	            
-	            //show the number of records
-	            stmt = con.createStatement();
-	            
-	            String query1 = "select * from emp";
-	            ResultSet rs =  stmt.executeQuery(query1);
-	            System.out.println("Id    Name    Salary");
-	            
-	            while (rs.next()) {
-	               int id = rs.getInt("empid");
-	               String name = rs.getString("empname");
-	               String sal = rs.getString("salary");
-	               System.out.println(id + "    " + name+"    "+sal);
-	            }    	            
-	        } catch (ClassNotFoundException e) {
-	            // TODO Auto-generated catch block
-	            e.printStackTrace();
-	        } catch (SQLException e) {
-	            // TODO Auto-generated catch block
-	            e.printStackTrace();
-	        } finally{
-	            try{
-	                if(prSt != null) prSt.close();
-	                if(con != null) con.close();
-	            } catch(Exception ex){}
-	        }
-	}
-	
-	//-------------------------- Updating The Record-----------------------------//
-	public void updatePSRecord()
-    { 
-		String sqlUpdate = "UPDATE emp SET salary = ? WHERE empid = ?";
-		
-		try {
-            try {
-				Class.forName("com.mysql.jdbc.Driver");
-				con = DriverManager.getConnection(url, user, password);
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-            prSt = con.prepareStatement(sqlUpdate);
-            
-            // Take user input for insertion
-            Scanner input = new Scanner(System.in);	
-            
-            System.out.print("Enter the empid:  ");
-            int eid = input.nextInt();
-            System.out.println();
-            
-            System.out.print("Enter the employee salary:  ");
-            int esal = input.nextInt();
-            System.out.println();
-            
-            prSt.setInt(1, esal);
-            prSt.setInt(2, eid);
- 
-            int rowAffected = prSt.executeUpdate();
-            System.out.println(String.format("Row affected %d", rowAffected));
- 
-		}
-		catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }		
+
+        System.out.println("============= USER MANAGEMENT MENU =============");
+        System.out.println("1. Insert new user");
+        System.out.println("2. Update user role");
+        System.out.println("3. Delete user");
+        System.out.println("================================================");
+        System.out.print("Enter your choice (1-3): ");
+
+        int choice = input.nextInt();
+        System.out.println("You selected option " + choice);
+
+        switch (choice) {
+            case 1: fm.insertUser();
+                    break;
+            case 2: fm.updateUserRole();
+                    break;
+            case 3: fm.deleteUser();
+                    break;
+            default: System.out.println("Invalid choice");
+        }
     }
-	
-	//-------------------------- Deleting The Record-----------------------------//
-		public void deletePSRecord()
-	    { 
-			String sqlUpdate = "DELETE from emp where empid=?";
-			
-			try {
-	            try {
-					Class.forName("com.mysql.jdbc.Driver");
-					con = DriverManager.getConnection(url, user, password);
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				}
-	            prSt = con.prepareStatement(sqlUpdate);
-	            
-	            // Take user input for insertion
-	            Scanner input = new Scanner(System.in);	
-	            
-	            System.out.print("Enter the empid:  ");
-	            int eid = input.nextInt();
-	            System.out.println();
-	            
-	            prSt.setInt(1, eid);
-	            int v = prSt.executeUpdate();
-	            
-	            if(v==1)
-	            {
-	            	System.out.println("Record deleted successfully");
-	            }
-	            else{
-	            	System.out.println("Not Deleted");
-	            }
-	            
-			}
-			catch (SQLException ex) {
-	            System.out.println(ex.getMessage());
-	        }				
-	    }
-		
+
+    // Insert new user
+    public void insertUser() {
+        String query = "INSERT INTO users(username, password, email, phone, role) VALUES (?, ?, ?, ?, ?)";
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection(url, user, password);
+            prSt = con.prepareStatement(query);
+
+            Scanner input = new Scanner(System.in);
+
+            System.out.print("Enter username: ");
+            String uname = input.nextLine();
+
+            System.out.print("Enter password: ");
+            String pwd = input.nextLine();
+
+            System.out.print("Enter email: ");
+            String email = input.nextLine();
+
+            System.out.print("Enter phone: ");
+            String phone = input.nextLine();
+
+            System.out.print("Enter role (PASSENGER/ADMIN): ");
+            String role = input.nextLine();
+
+            prSt.setString(1, uname);
+            prSt.setString(2, pwd);
+            prSt.setString(3, email);
+            prSt.setString(4, phone);
+            prSt.setString(5, role);
+
+            int count = prSt.executeUpdate();
+            System.out.println(count + " user(s) inserted successfully.");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (prSt != null) prSt.close();
+                if (con != null) con.close();
+            } catch (Exception ex) {}
+        }
+    }
+
+    // Update user role
+    public void updateUserRole() {
+        String query = "UPDATE users SET role = ? WHERE user_id = ?";
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection(url, user, password);
+            prSt = con.prepareStatement(query);
+
+            Scanner input = new Scanner(System.in);
+
+            System.out.print("Enter user_id: ");
+            int uid = input.nextInt();
+            input.nextLine(); // consume newline
+
+            System.out.print("Enter new role (PASSENGER/ADMIN): ");
+            String role = input.nextLine();
+
+            prSt.setString(1, role);
+            prSt.setInt(2, uid);
+
+            int rows = prSt.executeUpdate();
+            System.out.println("Rows updated: " + rows);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (prSt != null) prSt.close();
+                if (con != null) con.close();
+            } catch (Exception ex) {}
+        }
+    }
+
+    // Delete user
+    public void deleteUser() {
+        String query = "DELETE FROM users WHERE user_id = ?";
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection(url, user, password);
+            prSt = con.prepareStatement(query);
+
+            Scanner input = new Scanner(System.in);
+
+            System.out.print("Enter user_id to delete: ");
+            int uid = input.nextInt();
+
+            prSt.setInt(1, uid);
+            int result = prSt.executeUpdate();
+
+            if (result > 0) {
+                System.out.println("User deleted successfully.");
+            } else {
+                System.out.println("User not found.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (prSt != null) prSt.close();
+                if (con != null) con.close();
+            } catch (Exception ex) {}
+        }
+    }
 }
+
+
+
+
+
+
+
+
+//package flight.program;
+//
+//import java.sql.Connection; 
+//import java.sql.DriverManager;
+//import java.sql.PreparedStatement;
+//import java.sql.ResultSet; 
+//import java.sql.SQLException; 
+//import java.sql.Statement;
+//import java.util.Scanner;
+//
+//public class Flight_Management {
+//
+//	// JDBC URL, username and password of MySQL server
+//    private static final String url = "jdbc:mysql://localhost:3306/db_world";
+//    private static final String user = "root";
+//    private static final String password = "root";
+//    
+//    Connection con;
+//    PreparedStatement prSt;
+//    Statement stmt;
+//	
+//	public static void main(String[] args) {
+//		
+//		Flight_Management pse = new Flight_Management();
+//    	
+//        Scanner input = new Scanner(System.in);
+//    	
+//        System.out.println("=============PREPARED STATEMENT MENU=================");
+//        System.out.println("1. Insert the new employee Record"); 
+//        System.out.println("2. Update the employee Record");
+//        System.out.println("3. Delete the employee Record");
+//        System.out.println("====================================================");
+//    	System.out.println("Enter your choice from (1-3): ");
+//    	
+//    	int number = input.nextInt();
+//    	System.out.println("You entered option" + number);
+//    	
+//    	switch(number)
+//    	{
+//    	case 1: pse.insertPSRecord();
+//    	        break;
+//    	
+//    	case 2: pse.updatePSRecord();
+//    	        break;
+//    	        
+//    	case 3: pse.deletePSRecord();
+//    	        break;
+//    	}	
+//        	
+//	}
+//	
+//	//-------------------------- Inserting The Record-----------------------------//
+//	public void insertPSRecord()
+//    {  
+//		String query = "insert into emp(empid,empname,salary) values(?,?,?)";
+//		
+//	      try {
+//	            Class.forName("com.mysql.jdbc.Driver");
+//	            con = DriverManager.getConnection(url, user, password);
+//	           
+//	            prSt = con.prepareStatement(query);
+//	            
+//	            // Take user input for insertion
+//	            Scanner input = new Scanner(System.in);	
+//	            
+//	            System.out.print("Enter the empid:  ");
+//	            int eid = input.nextInt();
+//	            System.out.println();
+//	            
+//	            System.out.print("Enter the employee salary:  ");
+//	            int esal = input.nextInt();
+//	            System.out.println();
+//	            
+//	            System.out.print("Enter the employee name:  ");
+//	            String ename = input.next();
+//	            System.out.println();
+//	            
+//	            prSt.setInt(1, eid);
+//	            prSt.setString(2, ename);
+//	            prSt.setInt(3, esal);
+//	            
+//	            int count = prSt.executeUpdate();
+//	            
+//	            //show the number of records
+//	            stmt = con.createStatement();
+//	            
+//	            String query1 = "select * from emp";
+//	            ResultSet rs =  stmt.executeQuery(query1);
+//	            System.out.println("Id    Name    Salary");
+//	            
+//	            while (rs.next()) {
+//	               int id = rs.getInt("empid");
+//	               String name = rs.getString("empname");
+//	               String sal = rs.getString("salary");
+//	               System.out.println(id + "    " + name+"    "+sal);
+//	            }    	            
+//	        } catch (ClassNotFoundException e) {
+//	            // TODO Auto-generated catch block
+//	            e.printStackTrace();
+//	        } catch (SQLException e) {
+//	            // TODO Auto-generated catch block
+//	            e.printStackTrace();
+//	        } finally{
+//	            try{
+//	                if(prSt != null) prSt.close();
+//	                if(con != null) con.close();
+//	            } catch(Exception ex){}
+//	        }
+//	}
+//	
+//	//-------------------------- Updating The Record-----------------------------//
+//	public void updatePSRecord()
+//    { 
+//		String sqlUpdate = "UPDATE emp SET salary = ? WHERE empid = ?";
+//		
+//		try {
+//            try {
+//				Class.forName("com.mysql.jdbc.Driver");
+//				con = DriverManager.getConnection(url, user, password);
+//			} catch (ClassNotFoundException e) {
+//				e.printStackTrace();
+//			}
+//            prSt = con.prepareStatement(sqlUpdate);
+//            
+//            // Take user input for insertion
+//            Scanner input = new Scanner(System.in);	
+//            
+//            System.out.print("Enter the empid:  ");
+//            int eid = input.nextInt();
+//            System.out.println();
+//            
+//            System.out.print("Enter the employee salary:  ");
+//            int esal = input.nextInt();
+//            System.out.println();
+//            
+//            prSt.setInt(1, esal);
+//            prSt.setInt(2, eid);
+// 
+//            int rowAffected = prSt.executeUpdate();
+//            System.out.println(String.format("Row affected %d", rowAffected));
+// 
+//		}
+//		catch (SQLException ex) {
+//            System.out.println(ex.getMessage());
+//        }		
+//    }
+//	
+//	//-------------------------- Deleting The Record-----------------------------//
+//		public void deletePSRecord()
+//	    { 
+//			String sqlUpdate = "DELETE from emp where empid=?";
+//			
+//			try {
+//	            try {
+//					Class.forName("com.mysql.jdbc.Driver");
+//					con = DriverManager.getConnection(url, user, password);
+//				} catch (ClassNotFoundException e) {
+//					e.printStackTrace();
+//				}
+//	            prSt = con.prepareStatement(sqlUpdate);
+//	            
+//	            // Take user input for insertion
+//	            Scanner input = new Scanner(System.in);	
+//	            
+//	            System.out.print("Enter the empid:  ");
+//	            int eid = input.nextInt();
+//	            System.out.println();
+//	            
+//	            prSt.setInt(1, eid);
+//	            int v = prSt.executeUpdate();
+//	            
+//	            if(v==1)
+//	            {
+//	            	System.out.println("Record deleted successfully");
+//	            }
+//	            else{
+//	            	System.out.println("Not Deleted");
+//	            }
+//	            
+//			}
+//			catch (SQLException ex) {
+//	            System.out.println(ex.getMessage());
+//	        }				
+//	    }
+//		
+//}
