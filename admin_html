@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Admin Panel</h2>
+    <ul>
+      <li><a href="#addFlight">Add Flight</a></li>
+      <li><a href="#removeFlight">Remove Flight</a></li>
+      <li><a href="#updateFlight">Update Flight</a></li>
+      <li><a href="#modifyFlightSchedule">Modify Flight Schedule</a></li>
+      <li><a href="#addFlightSchedule">Add Flight Schedule</a></li>
+      <li><a href="#addBooking">Add Booking</a></li>
+      <li><a href="#updateBooking">Update Booking</a></li>
+      <li><a href="#deleteBooking">Delete Booking</a></li>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <h1>Admin Dashboard</h1>
+      <div class="auth-buttons">
+        <button id="signInBtn">Sign In</button>
+        <button id="signOutBtn">Sign Out</button>
+      </div>
+    </header>
+
+    <section id="addFlight" class="card">
+      <h2>Add Flight</h2>
+      <input type="text" placeholder="Flight Name">
+      <input type="text" placeholder="Flight Number">
+      <button>Add Flight</button>
+    </section>
+
+    <section id="removeFlight" class="card">
+      <h2>Remove Flight</h2>
+      <input type="text" placeholder="Flight Number">
+      <button>Remove Flight</button>
+    </section>
+
+    <section id="updateFlight" class="card">
+      <h2>Update Flight</h2>
+      <input type="text" placeholder="Flight Number">
+      <input type="text" placeholder="New Flight Name">
+      <button>Update Flight</button>
+    </section>
+
+    <section id="modifyFlightSchedule" class="card">
+      <h2>Modify Flight Schedule</h2>
+      <input type="text" placeholder="Flight Number">
+      <input type="text" placeholder="New Schedule">
+      <button>Modify Schedule</button>
+    </section>
+
+    <section id="addFlightSchedule" class="card">
+      <h2>Add Flight Schedule</h2>
+      <input type="text" placeholder="Flight Number">
+      <input type="text" placeholder="Schedule">
+      <button>Add Schedule</button>
+    </section>
+
+    <section id="addBooking" class="card">
+      <h2>Add Booking</h2>
+      <input type="text" placeholder="Passenger Name">
+      <input type="text" placeholder="Flight Number">
+      <button>Add Booking</button>
+    </section>
+
+    <section id="updateBooking" class="card">
+      <h2>Update Booking</h2>
+      <input type="text" placeholder="Booking ID">
+      <input type="text" placeholder="New Passenger Name">
+      <button>Update Booking</button>
+    </section>
+
+    <section id="deleteBooking" class="card">
+      <h2>Delete Booking</h2>
+      <input type="text" placeholder="Booking ID">
+      <button>Delete Booking</button>
+    </section>
+  </div>
+</body>
+</html>
