@@ -1,0 +1,60 @@
+create database FlightMAnagement;
+use FlightManagement;
+-- created table users
+CREATE TABLE users (
+user_id SERIAL PRIMARY KEY,
+username VARCHAR(50) UNIQUE NOT NULL,
+password VARCHAR(100) NOT NULL,
+email VARCHAR(100) UNIQUE NOT NULL,
+phone VARCHAR(15),
+role VARCHAR(10) CHECK (role IN ('PASSENGER','ADMIN')) DEFAULT 'PASSENGER'
+);
+
+-- created table flights
+CREATE TABLE flights (
+flight_id SERIAL PRIMARY KEY,
+airline VARCHAR(50) NOT NULL,
+source VARCHAR(50) NOT NULL,
+destination VARCHAR(50) NOT NULL,
+total_seats INT NOT NULL
+);
+
+-- create table schedules
+CREATE TABLE schedules (
+schedule_id SERIAL PRIMARY KEY,
+flight_id INT REFERENCES flights(flight_id) ON DELETE CASCADE,
+departure_time TIMESTAMP NOT NULL,
+arrival_time TIMESTAMP NOT NULL,
+available_seats INT
+);
+
+-- create table booking
+CREATE TABLE bookings (
+booking_id SERIAL PRIMARY KEY,
+user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
+schedule_id INT REFERENCES schedules(schedule_id) ON DELETE CASCADE,
+seats_booked INT NOT NULL,
+booking_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+status VARCHAR(20) CHECK (status IN ('CONFIRMED','CANCELLED')) DEFAULT 'CONFIRMED'
+);
+
+-- booking table
+CREATE TABLE bookings (
+booking_id SERIAL PRIMARY KEY,
+user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
+schedule_id INT REFERENCES schedules(schedule_id) ON DELETE CASCADE,
+seats_booked INT NOT NULL,
+booking_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+status VARCHAR(20) CHECK (status IN ('CONFIRMED','CANCELLED')) DEFAULT 'CONFIRMED'
+);
+
+-- table for cancled history
+CREATE TABLE cancellation_history (
+    cancel_id SERIAL PRIMARY KEY,
+    booking_id INT REFERENCES bookings(booking_id) ON DELETE CASCADE,
+    user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
+    schedule_id INT REFERENCES schedules(schedule_id) ON DELETE CASCADE,
+    seats_cancelled INT NOT NULL,
+    cancel_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    reason TEXT
+);
