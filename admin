@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - Flight Management</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <div class="container">
+    <h1>✈️ Admin Dashboard</h1>
+    
+    <div class="section">
+      <h2>Flight Management</h2>
+      <div class="form-group">
+        <input type="text" placeholder="Flight ID">
+        <input type="text" placeholder="Flight Name">
+        <input type="text" placeholder="Destination">
+      </div>
+      <div class="btn-group">
+        <button onclick="addFlight()">Add Flight</button>
+        <button onclick="removeFlight()">Remove Flight</button>
+        <button onclick="updateFlight()">Update Flight</button>
+        <button onclick="insertFlight()">Insert Flight</button>
+        <button onclick="modifyFlightSchedule()">Modify Schedule</button>
+        <button onclick="addFlightSchedule()">Add Schedule</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Booking Management</h2>
+      <div class="form-group">
+        <input type="text" placeholder="Booking ID">
+        <input type="text" placeholder="Passenger Name">
+        <input type="text" placeholder="Seat Number">
+      </div>
+      <div class="btn-group">
+        <button onclick="addBooking()">Add Booking</button>
+        <button onclick="updateBooking()">Update Booking</button>
+        <button onclick="deleteBooking()">Delete Booking</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function addFlight(){alert("Add Flight function called");}
+    function removeFlight(){alert("Remove Flight function called");}
+    function updateFlight(){alert("Update Flight function called");}
+    function insertFlight(){alert("Insert Flight function called");}
+    function modifyFlightSchedule(){alert("Modify Flight Schedule function called");}
+    function addFlightSchedule(){alert("Add Flight Schedule function called");}
+
+    function addBooking(){alert("Add Booking function called");}
+    function updateBooking(){alert("Update Booking function called");}
+    function deleteBooking(){alert("Delete Booking function called");}
+  </script>
+</body>
+</html>
